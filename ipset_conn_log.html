@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+        <title>IPsets to log connections</title>
+        <meta charset="utf-8" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Knowledge Arcana Full Atom Feed" />
+        <link href="/feeds/sysadmin.atom.xml" type="application/atom+xml" rel="alternate" title="Knowledge Arcana Categories Atom Feed" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="/theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="/theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="/theme/pygment.css" />
+
+        <script src="/theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="/">Knowledge Arcana <strong></strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+             
+              <ul class="columns">
+                <li><a href="/">Home</a></li>
+
+                <li><a href="/pages/about.html">About</a></li>
+
+              </ul>
+            </div>
+
+<section id="content" class="body">
+
+   <div class="row">
+        <div class="eleven columns">
+
+
+            <header>
+              <h2 class="entry-title">
+                <a href="/ipset_conn_log.html" rel="bookmark"
+                   title="Permalink to IPsets to log connections">IPsets to log connections</a></h2>
+           
+            </header>
+            <footer class="post-info">
+              <abbr class="published" title="2016-10-17T00:00:00-07:00">
+                Mon 17 October 2016
+              </abbr>
+              <address class="vcard author">By 
+                <a class="url fn" href="/author/ryan-carter.html"> Ryan Carter</a>
+              </address>
+            </footer><!-- /.post-info -->
+            <div class="entry-content">
+              <p>Recently we had a server that needed to be decommissioned and it was one of those old servers everyone has (and always trying to get rid of) that runs too many important things.
+We knew what processes were running sure, but wanted to be sure nothing was still connecting to it over a long period of time (say, a week). Trusty netfilter to the rescue.</p>
+<p>ipsets have many different set types, in this case we used a <cite>hash:ip,port</cite> type.</p>
+<div class="highlight"><pre><span></span><span class="c1"># Add our ipset with no expiry and a reasonably high maxelem (this is the default).</span>
+$ ipset create server_connectors hash:ip,port family inet maxelem <span class="m">65536</span> timeout 0
+
+<span class="c1"># Add iptables rule to match new tcp connections on one interface and always try to add.</span>
+$ iptables -I INPUT <span class="m">2</span> -i <span class="nv">$external_int</span> -p tcp -m conntrack --ctstate NEW -j SET --add-set server_connectors src --exist
+</pre></div>
+<p>All good right?</p>
+<div class="highlight"><pre><span></span>$ ipset save server_connectors <span class="p">|</span> grep -v create <span class="p">|</span> wc -l
+0
+</pre></div>
+<p>Uh... What?</p>
+<p>Lets look at the man page for the SET target (iptables-extensions in debian)</p>
+<!--  -->
+<blockquote>
+<dl class="docutils">
+<dt>SET</dt>
+<dd><p class="first">This module adds and/or deletes entries from IP sets which can be defined by ipset(8).</p>
+<dl class="last docutils">
+<dt>--add-set setname flag[,flag...]</dt>
+<dd>add the address(es)/port(s) of the packet to the set</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+<p>And in the ipset man page?</p>
+<!--  -->
+<blockquote>
+TYPENAME := method:datatype[,datatype[,datatype]]</blockquote>
+<p>For whatever reason I did not associate &quot;flag&quot; with &quot;datatype&quot;. /s</p>
+<p>So now our rule looks like this:</p>
+<div class="highlight"><pre><span></span>$ iptables -I INPUT <span class="m">2</span> -i <span class="nv">$external_int</span> -p tcp -m conntrack --ctstate NEW -j SET --add-set server_connectors src,dst --exist
+</pre></div>
+<p>And so we have our list populating</p>
+<div class="highlight"><pre><span></span>$ ipset save server_connectors <span class="p">|</span> grep -v create <span class="p">|</span> wc -l
+23
+</pre></div>
+
+            </div><!-- /.entry-content -->
+
+
+        </div><!-- /.eleven.columns -->
+
+<div class="three columns">
+
+<h4>Pages</h4>
+
+ <ul>
+      <li><a href="/pages/about.html">About</a></li>
+  </ul>
+
+<h4>Categories</h4>
+<ul class="blank">
+		<li><a href="/category/sysadmin.html">sysadmin</a></li>
+</ul>
+
+
+<h4>Tags</h4>
+	<ul class="blank">
+</ul>
+
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/eiginn">GH @eiginn</a></li>
+    <li><a href="https://twitter.com/vaelen">T @vaelen</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+
+</section>
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+    
+        <footer id="credits" class="row">
+          <div class="seven columns left-center">
+
+                   <address id="about" class="vcard body">
+                    Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
+                    which takes great advantage of <a href="http://python.org">Python</a>.
+                    <br />
+                    Based on the <a target="_blank" href="http://gumbyframework.com">Gumby Framework</a>
+                    </address>
+          </div>
+
+
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+
+
+
+
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="/theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="/theme/js/libs/gumby.min.js"></script>
+  <script src="/theme/js/plugins.js"></script>
+</body>
+</html>

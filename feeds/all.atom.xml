@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Knowledge Arcana</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2016-10-17T00:00:00-07:00</updated><entry><title>IPsets to log connections</title><link href="/ipset_conn_log.html" rel="alternate"></link><published>2016-10-17T00:00:00-07:00</published><updated>2016-10-17T00:00:00-07:00</updated><author><name>Ryan Carter</name></author><id>tag:,2016-10-17:ipset_conn_log.html</id><summary type="html">&lt;p&gt;Recently we had a server that needed to be decommissioned and it was one of those old servers everyone has (and always trying to get rid of) that runs too many important things.
+We knew what processes were running sure, but wanted to be sure nothing was still connecting to it over a long period of time (say, a week). Trusty netfilter to the rescue.&lt;/p&gt;
+&lt;p&gt;ipsets have many different set types, in this case we used a &lt;cite&gt;hash:ip,port&lt;/cite&gt; type.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Add our ipset with no expiry and a reasonably high maxelem (this is the default).&lt;/span&gt;
+$ ipset create server_connectors hash:ip,port family inet maxelem &lt;span class="m"&gt;65536&lt;/span&gt; timeout 0
+
+&lt;span class="c1"&gt;# Add iptables rule to match new tcp connections on one interface and always try to add.&lt;/span&gt;
+$ iptables -I INPUT &lt;span class="m"&gt;2&lt;/span&gt; -i &lt;span class="nv"&gt;$external_int&lt;/span&gt; -p tcp -m conntrack --ctstate NEW -j SET --add-set server_connectors src --exist
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;All good right?&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ipset save server_connectors &lt;span class="p"&gt;|&lt;/span&gt; grep -v create &lt;span class="p"&gt;|&lt;/span&gt; wc -l
+0
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Uh... What?&lt;/p&gt;
+&lt;p&gt;Lets look at the man page for the SET target (iptables-extensions in debian)&lt;/p&gt;
+&lt;!--  --&gt;
+&lt;blockquote&gt;
+&lt;dl class="docutils"&gt;
+&lt;dt&gt;SET&lt;/dt&gt;
+&lt;dd&gt;&lt;p class="first"&gt;This module adds and/or deletes entries from IP sets which can be defined by ipset(8).&lt;/p&gt;
+&lt;dl class="last docutils"&gt;
+&lt;dt&gt;--add-set setname flag[,flag...]&lt;/dt&gt;
+&lt;dd&gt;add the address(es)/port(s) of the packet to the set&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;And in the ipset man page?&lt;/p&gt;
+&lt;!--  --&gt;
+&lt;blockquote&gt;
+TYPENAME := method:datatype[,datatype[,datatype]]&lt;/blockquote&gt;
+&lt;p&gt;For whatever reason I did not associate &amp;quot;flag&amp;quot; with &amp;quot;datatype&amp;quot;. /s&lt;/p&gt;
+&lt;p&gt;So now our rule looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ iptables -I INPUT &lt;span class="m"&gt;2&lt;/span&gt; -i &lt;span class="nv"&gt;$external_int&lt;/span&gt; -p tcp -m conntrack --ctstate NEW -j SET --add-set server_connectors src,dst --exist
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;And so we have our list populating&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ipset save server_connectors &lt;span class="p"&gt;|&lt;/span&gt; grep -v create &lt;span class="p"&gt;|&lt;/span&gt; wc -l
+23
+&lt;/pre&gt;&lt;/div&gt;
+</summary><category term="iptables"></category></entry></feed>
