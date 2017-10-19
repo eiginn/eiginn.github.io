@@ -1,0 +1,43 @@
+languageCode = "en-us"
+title = "Knowledge Arcana"
+baseURL = "https://eiginn.github.io"
+
+enableRobotsTXT = true # Suggested, enable robots.txt file
+#googleAnalytics = "" # Optional, add tracking Id for analytics
+#disqusShortname = "" # Optional, add Disqus shortname for comments
+SectionPagesMenu = "main" # Enable menu system for lazy bloggers
+
+metaDataFormat = "toml"
+theme = "hugo-bootstrap-premium"
+paginate = 10
+paginatePath = "page"
+
+[params]
+  description = "" # Suggested, controls default description meta
+  author = "Ryan Carter" # Optional, controls author name display on posts
+  hide_author = false # Optional, set true to hide author name on posts
+  show_menu = true # Optional, set true to enable section menu
+  powered_by = true # Optional, set false to disable credits
+  images = [] # Suggested, adds default OpenGraph image
+  #footline = "code with <i class='fa fa-heart'></i>"
+  home = "home"
+  highlight = "hybrid"
+  showRightSidebar = true
+  github = "eiginn" # Your Github profile ID
+  twitter = "vaelen" # Your Twitter profile ID
+
+[permalinks]
+    post = "/:year/:month/:day/:slug/"
+    code = "/:slug/"
+
+[menu]
+  [[menu.main]]
+    name = "Home"
+    weight = 0
+    identifier = "home"
+    url = "/"
+  [[menu.main]]
+    name = "Posts"
+    weight = 1
+    identifier = "post"
+    url = "/post/"
