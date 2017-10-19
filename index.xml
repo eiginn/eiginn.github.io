@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Knowledge Arcana</title>
+    <link>https://eiginn.github.io/</link>
+    <description>Recent content on Knowledge Arcana</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 18 Oct 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://eiginn.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker and the case of the denied libraries</title>
+      <link>https://eiginn.github.io/2017/10/18/docker_shlibs/</link>
+      <pubDate>Wed, 18 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://eiginn.github.io/2017/10/18/docker_shlibs/</guid>
+      <description>Today, when spawning a container using our (Cloudflare) dev env, I was presented with the following unexpected error:
+ /usr/sbin/syslog-ng: error while loading shared libraries: libsyslog-ng-3.6.so.0: cannot open shared object file: Permission denied For background we use salt SaltStack for config management and orchestration of bare metal, we then shoehorn this into a debian container for testing the majority of config changes. So container starts, begins highstating, and bam, syslog-ng can&#39;t start, WTF.</description>
+    </item>
+    
+    <item>
+      <title>IPsets to log connections</title>
+      <link>https://eiginn.github.io/2016/10/17/ipsets_connection_logging/</link>
+      <pubDate>Mon, 17 Oct 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://eiginn.github.io/2016/10/17/ipsets_connection_logging/</guid>
+      <description>Recently we had a server that needed to be decommissioned and it was one of those old servers everyone has (and always trying to get rid of) that runs too many important things. We knew what processes were running sure, but wanted to be sure nothing was still connecting to it over a long period of time (say, a week). Trusty netfilter to the rescue.
+ipsets have many different set types, in this case we used a hash:ip,port type.</description>
+    </item>
+    
+  </channel>
+</rss>

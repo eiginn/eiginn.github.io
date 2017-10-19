@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Docker and the case of the denied libraries  &middot; Knowledge Arcana</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="description" content="" />
+
+<meta name="keywords" content="docker, ">
+
+
+<meta property="og:title" content="Docker and the case of the denied libraries  &middot; Knowledge Arcana ">
+<meta property="og:site_name" content="Knowledge Arcana"/>
+<meta property="og:url" content="https://eiginn.github.io/2017/10/18/docker_shlibs/" />
+<meta property="og:locale" content="en-us">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:description" content=""/>
+<meta property="og:article:published_time" content="2017-10-18T00:00:00Z" />
+<meta property="og:article:modified_time" content="2017-10-18T00:00:00Z" />
+
+  
+    
+<meta property="og:article:tag" content="docker">
+    
+  
+
+  
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@vaelen" />
+<meta name="twitter:creator" content="@vaelen" />
+<meta name="twitter:title" content="Docker and the case of the denied libraries" />
+<meta name="twitter:description" content="" />
+<meta name="twitter:url" content="https://eiginn.github.io/2017/10/18/docker_shlibs/" />
+<meta name="twitter:domain" content="https://eiginn.github.io">
+  
+
+  
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "headline": "Docker and the case of the denied libraries",
+    "author": {
+      "@type": "Person",
+      "name": "http://profiles.google.com/+?rel=author"
+    },
+    "datePublished": "2017-10-18",
+    "description": "",
+    "wordCount": 611
+  }
+</script>
+  
+
+
+
+<link rel="canonical" href="https://eiginn.github.io/2017/10/18/docker_shlibs/" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+<link rel="icon" href="/favicon.png">
+<meta name="generator" content="Hugo 0.30" />
+
+  <!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+
+
+    <link rel="stylesheet" href="https://eiginn.github.io/css/bootswatch/default/bootstrap.min.css">
+
+
+<link rel="stylesheet" href="https://eiginn.github.io/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://eiginn.github.io/css/style.css">
+
+
+
+
+  <link rel="stylesheet" href="https://eiginn.github.io/css/highlight/hybrid.css">
+
+
+</head>
+<body data-ng-app="myapp" data-ng-controller="MyController" data-ng-mouseleave="MouseLeave($event)">
+    <header id="main-header">
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        
+          
+          <a class="navbar-brand-img" href="/">
+            <img alt="" src="">
+            
+          </a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+            
+            
+            <li class="">
+
+              <a href="https://eiginn.github.io/post/" >
+                
+                Posts
+              </a>
+            </li>
+            
+            <li class="">
+
+              <a href="https://eiginn.github.io/" >
+                
+                Home
+              </a>
+            </li>
+            
+            
+              
+          </ul>
+        </div>
+        
+      </div>
+    </nav>
+  </header>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div class="text-center">
+
+    <h1>Docker and the case of the denied libraries
+</h1>
+
+    <div class="metas">
+<small>
+  <i class="fa fa-calendar"></i>
+  <time datetime="2017-10-18">18 Oct, 2017</time>
+</small>
+
+
+  <small>
+  &middot; Read in about 3 min
+  &middot; (611 words)
+  &middot; 
+<span class="share-box">Share this on:
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-facebook-official "></i></a>
+
+    <a href="https://twitter.com/intent/tweet?text=Docker%20and%20the%20case%20of%20the%20denied%20libraries&amp;url=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-twitter"></i></a>
+
+    <a href="https://plus.google.com/share?url=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-google-plus"></i></a>
+
+    <a href="http://www.reddit.com/submit?url=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-reddit"></i></a>
+
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f&amp;title=Docker%20and%20the%20case%20of%20the%20denied%20libraries" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-linkedin"></i></a>
+
+    <a href="mailto:?subject=Docker%20and%20the%20case%20of%20the%20denied%20libraries&amp;body=Check out this site https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" data-proofer-ignore=""><i class="fa fa-envelope"></i></a>
+  </span>
+
+  </small>
+
+<div class="margin-10">
+  <i class="fa fa-tags"></i>
+  
+  <a href="https://eiginn.github.io/tags/docker" class="label label-primary">docker</a>
+  
+
+
+</div>
+
+<br>
+</div>
+
+  </div>
+</div>
+
+      <div class="content">
+  <div class="document">
+
+
+<p>Today, when spawning a container using our (Cloudflare) dev env, I was presented with the following unexpected error:</p>
+<!--  -->
+<blockquote>
+/usr/sbin/syslog-ng: error while loading shared libraries: libsyslog-ng-3.6.so.0: cannot open shared object file: Permission denied</blockquote>
+<p>For background we use salt SaltStack for config management and orchestration of bare metal, we then shoehorn this into a debian container for testing the majority of config changes. So container starts, begins highstating, and bam, syslog-ng can't start, WTF.</p>
+<p>Check out a random commit from the previous day where I was able to work on this (unrelated) change before. No luck. Fine.</p>
+<p>In the container lets try running syslog-ng by hand:</p>
+<pre class="code sh literal-block">
+root&#64;dev:/# /usr/sbin/syslog-ng -F --fd-limit <span class="literal number">100000</span> --worker-threads <span class="literal number">4</span>
+/usr/sbin/syslog-ng: error <span class="keyword">while</span> loading shared libraries: libsyslog-ng-3.6.so.0: cannot open shared object file: Permission denied
+root&#64;dev:/#
+</pre>
+<p>What the &#64;#$%* is going on?</p>
+<pre class="code sh literal-block">
+root&#64;dev:/lib# strace -f /usr/sbin/syslog-ng -F --fd-limit <span class="literal number">100000</span> --worker-threads <span class="literal number">4</span> <span class="literal number">2</span>&gt;<span class="punctuation">&amp;</span><span class="literal number">1</span> <span class="punctuation">|</span> grep -e EACCES -e write
+open<span class="operator">(</span><span class="literal string double">&quot;/usr/lib/syslog-ng/libsyslog-ng-3.6.so.0&quot;</span>, O_RDONLY<span class="punctuation">|</span>O_CLOEXEC<span class="operator">)</span> <span class="operator">=</span> -1 EACCES <span class="operator">(</span>Permission denied<span class="operator">)</span>
+stat<span class="operator">(</span><span class="literal string double">&quot;/usr/lib/syslog-ng&quot;</span>, 0x7ffd1848faf0<span class="operator">)</span> <span class="operator">=</span> -1 EACCES <span class="operator">(</span>Permission denied<span class="operator">)</span>
+open<span class="operator">(</span><span class="literal string double">&quot;/etc/ld.so.cache&quot;</span>, O_RDONLY<span class="punctuation">|</span>O_CLOEXEC<span class="operator">)</span> <span class="operator">=</span> -1 EACCES <span class="operator">(</span>Permission denied<span class="operator">)</span>
+stat<span class="operator">(</span><span class="literal string double">&quot;/lib/x86_64-linux-gnu&quot;</span>, 0x7ffd1848faf0<span class="operator">)</span> <span class="operator">=</span> -1 EACCES <span class="operator">(</span>Permission denied<span class="operator">)</span>
+stat<span class="operator">(</span><span class="literal string double">&quot;/usr/lib/x86_64-linux-gnu&quot;</span>, 0x7ffd1848faf0<span class="operator">)</span> <span class="operator">=</span> -1 EACCES <span class="operator">(</span>Permission denied<span class="operator">)</span>
+stat<span class="operator">(</span><span class="literal string double">&quot;/lib&quot;</span>, 0x7ffd1848faf0<span class="operator">)</span>            <span class="operator">=</span> -1 EACCES <span class="operator">(</span>Permission denied<span class="operator">)</span>
+stat<span class="operator">(</span><span class="literal string double">&quot;/usr/lib&quot;</span>, 0x7ffd1848faf0<span class="operator">)</span>        <span class="operator">=</span> -1 EACCES <span class="operator">(</span>Permission denied<span class="operator">)</span>
+writev<span class="operator">(</span><span class="literal number">2</span>, <span class="operator">[{</span><span class="literal string double">&quot;/usr/sbin/syslog-ng&quot;</span>, <span class="literal number">19</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;: &quot;</span>, <span class="literal number">2</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;error while loading shared libra&quot;</span>..., <span class="literal number">36</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;: &quot;</span>, <span class="literal number">2</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;libsyslog-ng-3.6.so.0&quot;</span>, <span class="literal number">21</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;: &quot;</span>, <span class="literal number">2</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;cannot open shared object file&quot;</span>, <span class="literal number">30</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;: &quot;</span>, <span class="literal number">2</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;Permission denied&quot;</span>, <span class="literal number">17</span><span class="operator">}</span>, <span class="operator">{</span><span class="literal string double">&quot;\n&quot;</span>, <span class="literal number">1</span><span class="operator">}]</span>, <span class="literal number">10</span>/usr/sbin/syslog-ng: error <span class="keyword">while</span> loading shared libraries: libsyslog-ng-3.6.so.0: cannot open shared object file: Permission denied
+root&#64;dev:/lib#
+root&#64;dev:/lib# stat /usr/lib/syslog-ng/libsyslog-ng-3.6.so.0
+  File: /usr/lib/syslog-ng/libsyslog-ng-3.6.so.0 -&gt; libsyslog-ng-3.6.so.0.0.0
+  Size: <span class="literal number">25</span>              Blocks: <span class="literal number">0</span>          IO Block: <span class="literal number">4096</span>   symbolic link
+Device: fd01h/64769d    Inode: <span class="literal number">12195470</span>    Links: <span class="literal number">1</span>
+Access: <span class="operator">(</span><span class="literal number">0777</span>/lrwxrwxrwx<span class="operator">)</span>  Uid: <span class="operator">(</span>    <span class="literal number">0</span>/    root<span class="operator">)</span>   Gid: <span class="operator">(</span>    <span class="literal number">0</span>/    root<span class="operator">)</span>
+Access: <span class="literal number">2017</span>-10-18 <span class="literal number">16</span>:16:29.872617408 -0700
+Modify: <span class="literal number">2017</span>-02-10 <span class="literal number">01</span>:25:38.000000000 -0800
+Change: <span class="literal number">2017</span>-06-14 <span class="literal number">16</span>:08:56.317565396 -0700
+ Birth: -
+root&#64;dev:/lib#
+root&#64;dev:/lib# stat /usr/lib/syslog-ng/libsyslog-ng-3.6.so.0.0.0
+  File: /usr/lib/syslog-ng/libsyslog-ng-3.8.so.0.0.0
+  Size: <span class="literal number">655656</span>          Blocks: <span class="literal number">1288</span>       IO Block: <span class="literal number">4096</span>   regular file
+Device: fd01h/64769d    Inode: <span class="literal number">12193093</span>    Links: <span class="literal number">1</span>
+Access: <span class="operator">(</span><span class="literal number">0644</span>/-rw-r--r--<span class="operator">)</span>  Uid: <span class="operator">(</span>    <span class="literal number">0</span>/    root<span class="operator">)</span>   Gid: <span class="operator">(</span>    <span class="literal number">0</span>/    root<span class="operator">)</span>
+Access: <span class="literal number">2017</span>-10-18 <span class="literal number">16</span>:16:29.876617408 -0700
+Modify: <span class="literal number">2017</span>-02-10 <span class="literal number">01</span>:25:38.000000000 -0800
+Change: <span class="literal number">2017</span>-06-14 <span class="literal number">16</span>:08:56.313565543 -0700
+ Birth: -
+</pre>
+<p>Not only can it not read the so file, it can't read any of the directories leading to it, yet permissions are right... right?
+(This should have been my hint at a wider problem)</p>
+<pre class="code sh literal-block">
+root&#64;dev:/lib# lsattr /usr/lib/syslog-ng/libsyslog-ng-3.6.so.0.0.0
+--------------e---- /usr/lib/syslog-ng/libsyslog-ng-3.6.so.0.0.0
+
+root&#64;dev:/# getfacl usr/lib/syslog-ng/libsyslog-ng-3.6.so.0.0.0
+<span class="comment single"># file: usr/lib/syslog-ng/libsyslog-ng-3.6.so.0.0.0
+# owner: root
+# group: root
+</span>user::rw-
+group::r--
+other::r--
+</pre>
+<p>It was about this time I noticed ntpd was failing to run in a similar way. One of my coworkers half jokingly asked if SELinux was turned on somehow, I said no... But I do run Ubuntu with AppArmor... no it can't be, I haven't changed it in ages.</p>
+<pre class="code sh literal-block">
+<span class="operator">[</span>vaelen:~<span class="operator">]</span>$ sudo grep DENIED /var/log/audit/audit.log <span class="punctuation">|</span> tail -n <span class="literal number">1</span>
+<span class="name variable">type</span><span class="operator">=</span>AVC <span class="name variable">msg</span><span class="operator">=</span>audit<span class="operator">(</span><span class="literal number">1508369848</span>.988:2773<span class="operator">)</span>: <span class="name variable">apparmor</span><span class="operator">=</span><span class="literal string double">&quot;DENIED&quot;</span> <span class="name variable">operation</span><span class="operator">=</span><span class="literal string double">&quot;getattr&quot;</span> <span class="name variable">info</span><span class="operator">=</span><span class="literal string double">&quot;Failed name lookup - disconnected path&quot;</span> <span class="name variable">error</span><span class="operator">=</span>-13 <span class="name variable">profile</span><span class="operator">=</span><span class="literal string double">&quot;/usr/sbin/ntpd&quot;</span> <span class="name variable">name</span><span class="operator">=</span><span class="literal string double">&quot;var/lib/docker/aufs/diff/9604729a122cb5b8d2bbad3c121892ca2a589c4e6684a2de5f110949e2479b0f/lib/x86_64-linux-gnu&quot;</span> <span class="name variable">pid</span><span class="operator">=</span><span class="literal number">1927</span> <span class="name variable">comm</span><span class="operator">=</span><span class="literal string double">&quot;ntpd&quot;</span> <span class="name variable">requested_mask</span><span class="operator">=</span><span class="literal string double">&quot;r&quot;</span> <span class="name variable">denied_mask</span><span class="operator">=</span><span class="literal string double">&quot;r&quot;</span> <span class="name variable">fsuid</span><span class="operator">=</span><span class="literal number">0</span> <span class="name variable">ouid</span><span class="operator">=</span><span class="name variable">0FSUID</span><span class="operator">=</span><span class="literal string double">&quot;root&quot;</span> <span class="name variable">OUID</span><span class="operator">=</span><span class="literal string double">&quot;root&quot;</span>
+</pre>
+<p>Smoking gun, but why? As a quick test I switched the syslog-ng apparmor profiles into complain mode and lo and behold, it was working. But that's not ok to disable a security mechanism if possible. A quick look at apt history and the profiles showed they hadn't changed in some time, something else must have.</p>
+<p>Look back at the &quot;name=&quot; field, it has the full path to the file -on the host- the apparmor profile is checking paths to files accessed and nowhere has it allowed such a path, but its in a container, shouldn't the path be from the container's perspective?
+After 1 second of googling, I came across <a class="reference external" href="https://github.com/moby/moby/issues/2800">https://github.com/moby/moby/issues/2800</a>, aufs... Which I had changed out for overlay2 long ago was switched back on, setting it back and restarting docker, voila!</p>
+<p>Now if only I knew how it had changed back.</p>
+</div>
+</div>
+
+
+      <footer>
+  
+<span class="share-box">Share this on:
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-facebook-official "></i></a>
+
+    <a href="https://twitter.com/intent/tweet?text=Docker%20and%20the%20case%20of%20the%20denied%20libraries&amp;url=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-twitter"></i></a>
+
+    <a href="https://plus.google.com/share?url=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-google-plus"></i></a>
+
+    <a href="http://www.reddit.com/submit?url=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-reddit"></i></a>
+
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f&amp;title=Docker%20and%20the%20case%20of%20the%20denied%20libraries" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-linkedin"></i></a>
+
+    <a href="mailto:?subject=Docker%20and%20the%20case%20of%20the%20denied%20libraries&amp;body=Check out this site https%3a%2f%2feiginn.github.io%2f2017%2f10%2f18%2fdocker_shlibs%2f" data-proofer-ignore=""><i class="fa fa-envelope"></i></a>
+  </span>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      
+  
+    <nav><ul class="pager">
+    
+        <li class="previous">
+          <a href="https://eiginn.github.io/2016/10/17/ipsets_connection_logging/" title="IPsets to log connections">
+            <span aria-hidden="true">&larr;</span>Previous
+          </a>
+        </li>
+    
+
+    
+    </ul> </nav>
+  
+
+
+</div>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  
+
+</div>
+
+</footer>
+
+    </div>
+    
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div>
+  
+
+    <div class="section">
+      <header><div class="title"><b>Latest Posts</b></div></header>
+      <div class="content">
+        <ul>
+        
+          <li>
+          <a href="https://eiginn.github.io/2017/10/18/docker_shlibs/">Docker and the case of the denied libraries</a>
+          </li>
+        
+          <li>
+          <a href="https://eiginn.github.io/2016/10/17/ipsets_connection_logging/">IPsets to log connections</a>
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+
+    
+      
+      
+      <div class="section taxonomies">
+        <header><div class="title"><b>category</b></div></header>
+
+        <div class="content">
+          <ul>
+            <li><a href="/categories/sysadmin">sysadmin</a></li>
+          </ul>
+        </div>
+      </div>
+      
+    
+      
+      
+      <div class="section taxonomies">
+        <header><div class="title"><b>tag</b></div></header>
+
+        <div class="content">
+          <ul>
+            <li><a href="/tags/docker">docker</a></li><li><a href="/tags/iptables">iptables</a></li>
+          </ul>
+        </div>
+      </div>
+      
+    
+
+</div>
+
+      </div>
+    
+  </div>
+</div>
+    
+<footer class="footer hidden-print">
+  <div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+           <div class="pull-left">
+  <a class="toplink" href="javascript:" id="return-to-top">back to top</a>
+</div>
+<div class="pull-right">
+
+</div>
+
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+              
+    
+<div class="container footline">
+    <small>
+</small>
+</div>
+
+
+    
+
+
+        </div>
+    </div>
+  </div>
+</footer>
+
+    
+
+<script src="//s3.amazonaws.com/mailmunch/static/site.js" id="mailmunch-script" data-mailmunch-site-id="" async="async"></script>
+
+
+
+<script src="//load.sumome.com/" data-sumo-site-id="" async="async"></script>
+
+<script src="https://eiginn.github.io/js/jquery.min.js"></script>
+<script src="https://eiginn.github.io/js/bootstrap.min.js"></script>
+
+
+<script src="https://eiginn.github.io/js/highlight.pack.js"></script>
+<script src="https://eiginn.github.io/js/site.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+<script>
+var ENABLE_POPOVER = "", 
+EXPIRE_COOKIE = "", 
+SHOW_MODAL_TIMEOUT = "", 
+MOUSE_LEAVE = "", 
+MODAL_SIZE = "", 
+POST_URL = "", 
+SIGNUP_HEADER = "",
+HEADER_IMAGE = "",
+IMG_DESCRIPTION = "",
+SIGNUP_TEXT = "",
+INPUT_PLACEHOLDER = "",
+SUBMIT_BUTTON = "",
+SUCCESS_MESSAGE = "",
+ERROR_MESSAGE = "",
+OPTIN = "",
+COOKIE_NAME = "",
+CONTENTLANGUAGE = ""; 
+</script>
+
+
+
+
+
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax//MathJax.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax//config/TeX-AMS-MML_HTMLorMML.js"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    for(var all in MathJax.Hub.getAllJax()) {
+        all.SourceElement().parentNode.className += ' has-jax';
+
+    }
+});
+</script>
+
+
+
+
+
+
+  </body>
+</html>
+

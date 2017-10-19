@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>IPsets to log connections  &middot; Knowledge Arcana</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="description" content="" />
+
+<meta name="keywords" content="iptables, ">
+
+
+<meta property="og:title" content="IPsets to log connections  &middot; Knowledge Arcana ">
+<meta property="og:site_name" content="Knowledge Arcana"/>
+<meta property="og:url" content="https://eiginn.github.io/2016/10/17/ipsets_connection_logging/" />
+<meta property="og:locale" content="en-us">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:description" content=""/>
+<meta property="og:article:published_time" content="2016-10-17T00:00:00Z" />
+<meta property="og:article:modified_time" content="2016-10-17T00:00:00Z" />
+
+  
+    
+<meta property="og:article:tag" content="iptables">
+    
+  
+
+  
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@vaelen" />
+<meta name="twitter:creator" content="@vaelen" />
+<meta name="twitter:title" content="IPsets to log connections" />
+<meta name="twitter:description" content="" />
+<meta name="twitter:url" content="https://eiginn.github.io/2016/10/17/ipsets_connection_logging/" />
+<meta name="twitter:domain" content="https://eiginn.github.io">
+  
+
+  
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "headline": "IPsets to log connections",
+    "author": {
+      "@type": "Person",
+      "name": "http://profiles.google.com/+?rel=author"
+    },
+    "datePublished": "2016-10-17",
+    "description": "",
+    "wordCount": 265
+  }
+</script>
+  
+
+
+
+<link rel="canonical" href="https://eiginn.github.io/2016/10/17/ipsets_connection_logging/" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+<link rel="icon" href="/favicon.png">
+<meta name="generator" content="Hugo 0.30" />
+
+  <!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+
+
+    <link rel="stylesheet" href="https://eiginn.github.io/css/bootswatch/default/bootstrap.min.css">
+
+
+<link rel="stylesheet" href="https://eiginn.github.io/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://eiginn.github.io/css/style.css">
+
+
+
+
+  <link rel="stylesheet" href="https://eiginn.github.io/css/highlight/hybrid.css">
+
+
+</head>
+<body data-ng-app="myapp" data-ng-controller="MyController" data-ng-mouseleave="MouseLeave($event)">
+    <header id="main-header">
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        
+          
+          <a class="navbar-brand-img" href="/">
+            <img alt="" src="">
+            
+          </a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+            
+            
+            <li class="">
+
+              <a href="https://eiginn.github.io/post/" >
+                
+                Posts
+              </a>
+            </li>
+            
+            <li class="">
+
+              <a href="https://eiginn.github.io/" >
+                
+                Home
+              </a>
+            </li>
+            
+            
+              
+          </ul>
+        </div>
+        
+      </div>
+    </nav>
+  </header>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div class="text-center">
+
+    <h1>IPsets to log connections
+</h1>
+
+    <div class="metas">
+<small>
+  <i class="fa fa-calendar"></i>
+  <time datetime="2016-10-17">17 Oct, 2016</time>
+</small>
+
+
+  <small>
+  &middot; Read in about 2 min
+  &middot; (265 words)
+  &middot; 
+<span class="share-box">Share this on:
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-facebook-official "></i></a>
+
+    <a href="https://twitter.com/intent/tweet?text=IPsets%20to%20log%20connections&amp;url=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-twitter"></i></a>
+
+    <a href="https://plus.google.com/share?url=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-google-plus"></i></a>
+
+    <a href="http://www.reddit.com/submit?url=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-reddit"></i></a>
+
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f&amp;title=IPsets%20to%20log%20connections" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-linkedin"></i></a>
+
+    <a href="mailto:?subject=IPsets%20to%20log%20connections&amp;body=Check out this site https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" data-proofer-ignore=""><i class="fa fa-envelope"></i></a>
+  </span>
+
+  </small>
+
+<div class="margin-10">
+  <i class="fa fa-tags"></i>
+  
+  <a href="https://eiginn.github.io/tags/iptables" class="label label-primary">iptables</a>
+  
+
+
+</div>
+
+<br>
+</div>
+
+  </div>
+</div>
+
+      <div class="content">
+  <div class="document">
+
+
+<p>Recently we had a server that needed to be decommissioned and it was one of those old servers everyone has (and always trying to get rid of) that runs too many important things.
+We knew what processes were running sure, but wanted to be sure nothing was still connecting to it over a long period of time (say, a week). Trusty netfilter to the rescue.</p>
+<p>ipsets have many different set types, in this case we used a <cite>hash:ip,port</cite> type.</p>
+<pre class="code sh literal-block">
+<span class="comment single"># Add our ipset with no expiry and a reasonably high maxelem (this is the default).
+</span>$ ipset create server_connectors hash:ip,port family inet maxelem <span class="literal number">65536</span> timeout <span class="literal number">0</span>
+
+<span class="comment single"># Add iptables rule to match new tcp connections on one interface and always try to add.
+</span>$ iptables -I INPUT <span class="literal number">2</span> -i <span class="name variable">$external_int</span> -p tcp -m conntrack --ctstate NEW -j SET --add-set server_connectors src --exist
+</pre>
+<p>All good right?</p>
+<pre class="code sh literal-block">
+$ ipset save server_connectors <span class="punctuation">|</span> grep -v create <span class="punctuation">|</span> wc -l
+<span class="literal number">0</span>
+</pre>
+<p>Uh... What?</p>
+<p>Lets look at the man page for the SET target (iptables-extensions in debian)</p>
+<!--  -->
+<blockquote>
+<dl class="docutils">
+<dt>SET</dt>
+<dd><p class="first">This module adds and/or deletes entries from IP sets which can be defined by ipset(8).</p>
+<dl class="last docutils">
+<dt>--add-set setname flag[,flag...]</dt>
+<dd>add the address(es)/port(s) of the packet to the set</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+<p>And in the ipset man page?</p>
+<!--  -->
+<blockquote>
+TYPENAME := method:datatype[,datatype[,datatype]]</blockquote>
+<p>For whatever reason I did not associate &quot;flag&quot; with &quot;datatype&quot;. /s</p>
+<p>So now our rule looks like this:</p>
+<pre class="code sh literal-block">
+$ iptables -I INPUT <span class="literal number">2</span> -i <span class="name variable">$external_int</span> -p tcp -m conntrack --ctstate NEW -j SET --add-set server_connectors src,dst --exist
+</pre>
+<p>And so we have our list populating</p>
+<pre class="code sh literal-block">
+$ ipset save server_connectors <span class="punctuation">|</span> grep -v create <span class="punctuation">|</span> wc -l
+<span class="literal number">23</span>
+</pre>
+</div>
+</div>
+
+
+      <footer>
+  
+<span class="share-box">Share this on:
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-facebook-official "></i></a>
+
+    <a href="https://twitter.com/intent/tweet?text=IPsets%20to%20log%20connections&amp;url=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-twitter"></i></a>
+
+    <a href="https://plus.google.com/share?url=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-google-plus"></i></a>
+
+    <a href="http://www.reddit.com/submit?url=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-reddit"></i></a>
+
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f&amp;title=IPsets%20to%20log%20connections" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-linkedin"></i></a>
+
+    <a href="mailto:?subject=IPsets%20to%20log%20connections&amp;body=Check out this site https%3a%2f%2feiginn.github.io%2f2016%2f10%2f17%2fipsets_connection_logging%2f" data-proofer-ignore=""><i class="fa fa-envelope"></i></a>
+  </span>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      
+  
+    <nav><ul class="pager">
+    
+
+    
+      <li class="next">
+        <a href="https://eiginn.github.io/2017/10/18/docker_shlibs/" title="Docker and the case of the denied libraries">
+            Next <span aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+    
+    </ul> </nav>
+  
+
+
+</div>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  
+
+</div>
+
+</footer>
+
+    </div>
+    
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div>
+  
+
+    <div class="section">
+      <header><div class="title"><b>Latest Posts</b></div></header>
+      <div class="content">
+        <ul>
+        
+          <li>
+          <a href="https://eiginn.github.io/2017/10/18/docker_shlibs/">Docker and the case of the denied libraries</a>
+          </li>
+        
+          <li>
+          <a href="https://eiginn.github.io/2016/10/17/ipsets_connection_logging/">IPsets to log connections</a>
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+
+    
+      
+      
+      <div class="section taxonomies">
+        <header><div class="title"><b>category</b></div></header>
+
+        <div class="content">
+          <ul>
+            <li><a href="/categories/sysadmin">sysadmin</a></li>
+          </ul>
+        </div>
+      </div>
+      
+    
+      
+      
+      <div class="section taxonomies">
+        <header><div class="title"><b>tag</b></div></header>
+
+        <div class="content">
+          <ul>
+            <li><a href="/tags/docker">docker</a></li><li><a href="/tags/iptables">iptables</a></li>
+          </ul>
+        </div>
+      </div>
+      
+    
+
+</div>
+
+      </div>
+    
+  </div>
+</div>
+    
+<footer class="footer hidden-print">
+  <div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+           <div class="pull-left">
+  <a class="toplink" href="javascript:" id="return-to-top">back to top</a>
+</div>
+<div class="pull-right">
+
+</div>
+
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+              
+    
+<div class="container footline">
+    <small>
+</small>
+</div>
+
+
+    
+
+
+        </div>
+    </div>
+  </div>
+</footer>
+
+    
+
+<script src="//s3.amazonaws.com/mailmunch/static/site.js" id="mailmunch-script" data-mailmunch-site-id="" async="async"></script>
+
+
+
+<script src="//load.sumome.com/" data-sumo-site-id="" async="async"></script>
+
+<script src="https://eiginn.github.io/js/jquery.min.js"></script>
+<script src="https://eiginn.github.io/js/bootstrap.min.js"></script>
+
+
+<script src="https://eiginn.github.io/js/highlight.pack.js"></script>
+<script src="https://eiginn.github.io/js/site.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+<script>
+var ENABLE_POPOVER = "", 
+EXPIRE_COOKIE = "", 
+SHOW_MODAL_TIMEOUT = "", 
+MOUSE_LEAVE = "", 
+MODAL_SIZE = "", 
+POST_URL = "", 
+SIGNUP_HEADER = "",
+HEADER_IMAGE = "",
+IMG_DESCRIPTION = "",
+SIGNUP_TEXT = "",
+INPUT_PLACEHOLDER = "",
+SUBMIT_BUTTON = "",
+SUCCESS_MESSAGE = "",
+ERROR_MESSAGE = "",
+OPTIN = "",
+COOKIE_NAME = "",
+CONTENTLANGUAGE = ""; 
+</script>
+
+
+
+
+
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax//MathJax.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax//config/TeX-AMS-MML_HTMLorMML.js"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[','\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    for(var all in MathJax.Hub.getAllJax()) {
+        all.SourceElement().parentNode.className += ' has-jax';
+
+    }
+});
+</script>
+
+
+
+
+
+
+  </body>
+</html>
+
